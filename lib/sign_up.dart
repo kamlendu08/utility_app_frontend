@@ -71,11 +71,19 @@ class _SignUpState extends State<SignUp> {
                       color: Colors.deepPurple,
                       borderRadius: BorderRadius.circular(12.0),
                     ),
-                    child: const Center(
-                      child: Text(
-                        'SIGN UP',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.white),
+                    child: TextButton(
+                      style: ButtonStyle(
+                        overlayColor: MaterialStateProperty.all(
+                          Colors.white54,
+                        ),
+                      ),
+                      onPressed: () {},
+                      child: const Center(
+                        child: Text(
+                          'SIGN UP',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.white),
+                        ),
                       ),
                     ),
                   ),
@@ -103,23 +111,27 @@ class _SignUpState extends State<SignUp> {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12.0),
                     ),
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4.0),
-                            child: Image.asset(
-                              "assets/images/googlelogo.png",
+                    child: TextButton(
+                      onPressed: () {},
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 4.0),
+                              child: Image.asset(
+                                "assets/images/googlelogo.png",
+                              ),
                             ),
-                          ),
-                          const Text(
-                            'SIGN UP WITH GOOGLE',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
+                            const Text(
+                              'SIGN UP WITH GOOGLE',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),

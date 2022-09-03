@@ -90,22 +90,25 @@ class _LoginPageState extends State<LoginPage> {
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24.0,
                 ),
-                child: InkWell(
-                  onTap: () {},
-                  splashColor: Colors.amber,
-                  child: Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.deepPurple,
-                      borderRadius: BorderRadius.circular(12.0),
+                child: Container(
+                  height: 50,
+                  width: size.width,
+                  decoration: BoxDecoration(
+                    color: Colors.deepPurple,
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  child: TextButton(
+                    style: ButtonStyle(
+                      overlayColor: MaterialStateProperty.all(
+                        Colors.white54,
+                      ),
                     ),
-                    child: const Center(
-                      child: Text(
-                        'SIGN IN',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                    onPressed: () {},
+                    child: Text(
+                      'SIGN IN',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -134,28 +137,36 @@ class _LoginPageState extends State<LoginPage> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12.0),
                   ),
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 4.0,
+                  child: TextButton(
+                    onPressed: () {},
+                    style: ButtonStyle(
+                      overlayColor: MaterialStateProperty.all(
+                        Colors.grey.shade300,
+                      ),
+                    ),
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 4.0,
+                            ),
+                            child: Image.asset(
+                              "assets/images/googlelogo.png",
+                            ),
                           ),
-                          child: Image.asset(
-                            "assets/images/googlelogo.png",
+                          const SizedBox(
+                            width: 10,
                           ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        const Text(
-                          'SIGN IN WITH GOOGLE',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
+                          const Text(
+                            'SIGN IN WITH GOOGLE',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
