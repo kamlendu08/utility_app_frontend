@@ -138,8 +138,13 @@ class _LoginPageState extends State<LoginPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image.asset(
-                          "assets/images/googlelogo.png",
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 4.0,
+                          ),
+                          child: Image.asset(
+                            "assets/images/googlelogo.png",
+                          ),
                         ),
                         const SizedBox(
                           width: 10,
