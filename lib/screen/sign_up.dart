@@ -1,6 +1,10 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:utilapp/api/url.dart';
 import 'otpscreen.dart';
+import './otpscreen.dart';
 
 class SignUp extends StatefulWidget {
   static const routname = '\signuppage';
@@ -89,13 +93,13 @@ class _SignUpState extends State<SignUp> {
                 ),
                 textinput(
                   inputController: _repasswordInput,
-                  text: 're-enter Password',
+                  text: 'Re-enter Password',
                 ),
                 const SizedBox(
                   height: 6,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Container(
                     height: 50,
                     decoration: BoxDecoration(
@@ -108,8 +112,21 @@ class _SignUpState extends State<SignUp> {
                           Colors.white54,
                         ),
                       ),
-                      onPressed: () {
-                        Navigator.push(context, SlideRightRoute(page: Otp()));
+                      onPressed: () async {
+                        bool otpsent = true;
+                        //await otpRequest(
+                        //  _usernameInput.text, _emailInput.text);
+
+                        if (otpsent) {
+                          Navigator.push(
+                              context,
+                              SlideRightRoute(
+                                  page: Otp(
+                                Username: _usernameInput.text,
+                                Password: _passwordInput.text,
+                                Email: _emailInput.text,
+                              )));
+                        }
                       },
                       child: const Center(
                         child: Text(
@@ -125,7 +142,7 @@ class _SignUpState extends State<SignUp> {
                   height: 10,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Container(
                     height: 2,
                     decoration: const BoxDecoration(
@@ -137,7 +154,7 @@ class _SignUpState extends State<SignUp> {
                   height: 10,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Container(
                     height: 50,
                     decoration: BoxDecoration(
@@ -189,7 +206,7 @@ class textinput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      padding: const EdgeInsets.symmetric(horizontal: 12.0),
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(
@@ -233,4 +250,19 @@ class SlideRightRoute extends PageRouteBuilder {
             child: child,
           ),
         );
+}
+
+Future<bool> otpRequest(String username, String email) async {
+  var url = Uri.parse(sendOtp);
+
+  // var body = {'username': username, 'email': email};
+  // print(jsonEncode(body));
+  var response = await http.post(url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{'username': username, 'email': email}));
+  if (response.statusCode == 200) return true;
+
+  return false;
 }

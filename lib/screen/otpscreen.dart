@@ -1,13 +1,40 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import '../api/url.dart';
+import 'package:http/http.dart' as http;
+import './dash_board.dart';
+
+// String Username = '';
+// String Email = '';
+// String Password = '';
+// // String repass = '';
+
+// void details(String username, email, password) {
+//   Username = username;
+//   Email = email;
+//   Password = password;
+// }
 
 class Otp extends StatefulWidget {
-  const Otp({super.key});
-
+  const Otp(
+      {super.key,
+      required this.Email,
+      required this.Password,
+      required this.Username});
+  final String Username;
+  final String Email;
+  final String Password;
   @override
   _OtpState createState() => _OtpState();
 }
 
 class _OtpState extends State<Otp> {
+  TextEditingController t1 = TextEditingController();
+  TextEditingController t2 = TextEditingController();
+  TextEditingController t3 = TextEditingController();
+  TextEditingController t4 = TextEditingController();
+  String otp = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,10 +106,12 @@ class _OtpState extends State<Otp> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _textFieldOTP(first: true, last: false),
-                        _textFieldOTP(first: false, last: false),
-                        _textFieldOTP(first: false, last: false),
-                        _textFieldOTP(first: false, last: true),
+                        _textFieldOTP(first: true, last: false, controller: t1),
+                        _textFieldOTP(
+                            first: false, last: false, controller: t2),
+                        _textFieldOTP(
+                            first: false, last: false, controller: t3),
+                        _textFieldOTP(first: false, last: true, controller: t4),
                       ],
                     ),
                     const SizedBox(
@@ -91,7 +120,17 @@ class _OtpState extends State<Otp> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          otp = t1.text + t2.text + t3.text + t4.text;
+                          print(otp);
+                          print(widget.Username);
+                          bool usercreated = await signup(widget.Username,
+                              widget.Email, widget.Password, otp);
+                          if (usercreated) {
+                            Navigator.push(
+                                context, SlideRightRoute(page: DashBoard()));
+                          }
+                        },
                         style: ButtonStyle(
                           foregroundColor:
                               MaterialStateProperty.all<Color>(Colors.white),
@@ -147,12 +186,14 @@ class _OtpState extends State<Otp> {
     );
   }
 
-  Widget _textFieldOTP({required bool first, last}) {
+  Widget _textFieldOTP(
+      {required bool first, last, required TextEditingController controller}) {
     return Container(
       height: 60,
       child: AspectRatio(
         aspectRatio: 1.0,
         child: TextField(
+          controller: controller,
           autofocus: true,
           onChanged: (value) {
             if (value.length == 1 && last == false) {
@@ -182,4 +223,44 @@ class _OtpState extends State<Otp> {
       ),
     );
   }
+}
+
+class SlideRightRoute extends PageRouteBuilder {
+  final Widget page;
+  SlideRightRoute({required this.page})
+      : super(
+          pageBuilder: (
+            BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+          ) =>
+              page,
+          transitionsBuilder: (
+            BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+            Widget child,
+          ) =>
+              SlideTransition(
+            position: Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero)
+                .animate(animation),
+            child: child,
+          ),
+        );
+}
+
+Future<bool> signup(String username, email, password, otp) async {
+  var url = Uri.parse(signupurl);
+  var response = await http.post(url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'username': username,
+        'email': email,
+        'password': password,
+        'otp': otp
+      }));
+  if (response.statusCode == 201) return true;
+  return false;
 }

@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:utilapp/screen/sign_up.dart';
 import 'dash_board.dart';
+import 'package:http/http.dart' as http;
+import '../api/url.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -10,6 +14,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final inputemail = TextEditingController();
+  TextEditingController password = TextEditingController();
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -52,17 +58,18 @@ class _LoginPageState extends State<LoginPage> {
                   height: 30,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.deepPurple[50],
                       border: Border.all(color: Colors.deepPurple),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Padding(
-                      padding: EdgeInsets.only(left: 20.0),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20.0),
                       child: TextField(
-                        decoration: InputDecoration(
+                        controller: inputemail,
+                        decoration: const InputDecoration(
                           border: InputBorder.none,
                           hintText: 'Email',
                         ),
@@ -71,21 +78,22 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(
-                  height: 10,
+                  height: 7,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.deepPurple[50],
                       border: Border.all(color: Colors.deepPurple),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Padding(
-                      padding: EdgeInsets.only(left: 20.0),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20.0),
                       child: TextField(
+                        controller: password,
                         obscureText: true,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: InputBorder.none,
                           hintText: 'Password',
                         ),
@@ -94,11 +102,11 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(
-                  height: 10,
+                  height: 7,
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 24.0,
+                    horizontal: 12.0,
                   ),
                   child: Container(
                     height: 50,
@@ -113,13 +121,17 @@ class _LoginPageState extends State<LoginPage> {
                           Colors.white54,
                         ),
                       ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          SlideRightRoute(
-                            page: const DashBoard(),
-                          ),
-                        );
+                      onPressed: () async {
+                        bool loggedin =
+                            await loginuser(inputemail.text, password.text);
+                        if (loggedin) {
+                          Navigator.push(
+                            context,
+                            SlideRightRoute(
+                              page: const DashBoard(),
+                            ),
+                          );
+                        }
                       },
                       child: const Text(
                         'SIGN IN',
@@ -135,7 +147,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 10,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Container(
                     height: 2,
                     decoration: const BoxDecoration(
@@ -147,7 +159,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 10,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Container(
                     height: 50,
                     decoration: BoxDecoration(
@@ -265,4 +277,17 @@ class SlideRightRoute extends PageRouteBuilder {
             child: child,
           ),
         );
+}
+
+Future<bool> loginuser(String email, password) async {
+  var url = Uri.parse(loginurl);
+  var response = await http.post(url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{'password': password, 'email': email}));
+  print(response.body[1]);
+  if (response.statusCode == 200) return true;
+
+  return false;
 }
