@@ -3,8 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:utilapp/api/url.dart';
+import 'package:utilapp/screen/dash_board.dart';
 import 'otpscreen.dart';
-import './otpscreen.dart';
+import 'package:email_validator/email_validator.dart';
 
 class SignUp extends StatefulWidget {
   static const routname = '\signuppage';
@@ -15,6 +16,7 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  final formKey = GlobalKey<FormState>();
   final _usernameInput = TextEditingController();
   final _emailInput = TextEditingController();
   final _passwordInput = TextEditingController();
@@ -25,168 +27,325 @@ class _SignUpState extends State<SignUp> {
       // backgroundColor: Colors.purple[50],
       backgroundColor: Color(0xfff7f6fb),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.center,
-              // mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 16, left: 16),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: const Icon(
-                        Icons.arrow_back,
-                        size: 32,
-                        color: Colors.black54,
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 16),
-                  child: Container(
-                    width: 170,
-                    height: 170,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.deepPurple.shade100),
-                    child: Image.asset(
-                      'assets/images/login.png',
-                    ),
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 10),
-                  child: Text(
-                    'Register',
-                    style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.deepPurple,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                textinput(
-                  inputController: _usernameInput,
-                  text: 'Username',
-                ),
-                const SizedBox(
-                  height: 6,
-                ),
-                textinput(
-                  inputController: _emailInput,
-                  text: 'Email',
-                ),
-                const SizedBox(
-                  height: 6,
-                ),
-                textinput(
-                  inputController: _passwordInput,
-                  text: 'Password',
-                ),
-                const SizedBox(
-                  height: 6,
-                ),
-                textinput(
-                  inputController: _repasswordInput,
-                  text: 'Re-enter Password',
-                ),
-                const SizedBox(
-                  height: 6,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.deepPurple,
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    child: TextButton(
-                      style: ButtonStyle(
-                        overlayColor: MaterialStateProperty.all(
-                          Colors.white54,
+        child: Form(
+          key: formKey,
+          child: SingleChildScrollView(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+                // mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16, left: 16),
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: const Icon(
+                          Icons.arrow_back,
+                          size: 32,
+                          color: Colors.black54,
                         ),
                       ),
-                      onPressed: () async {
-                        bool otpsent = true;
-                        //await otpRequest(
-                        //  _usernameInput.text, _emailInput.text);
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: Container(
+                      width: 170,
+                      height: 170,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.deepPurple.shade100),
+                      child: Image.asset(
+                        'assets/images/login.png',
+                      ),
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: Text(
+                      'Register',
+                      style: TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.deepPurple,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  // textinput(
+                  //   inputController: _usernameInput,
+                  //   text: 'Username',
+                  // ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.deepPurple,
+                        ),
+                        color: Colors.deepPurple[50],
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          left: 20,
+                          bottom: 5,
+                        ),
+                        child: TextFormField(
+                          validator: (email) {
+                            if (email == null || email.isEmpty) {
+                              return 'Username cannot be empty';
+                            }
+                            return null;
+                          },
+                          controller: _usernameInput,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Username',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 6,
+                  ),
+                  // textinput(
+                  //   inputController: _emailInput,
+                  //   text: 'Email',
+                  // ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.deepPurple,
+                        ),
+                        color: Colors.deepPurple[50],
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          left: 20,
+                          bottom: 5,
+                        ),
+                        child: TextFormField(
+                          validator: (email) {
+                            if (email == null) {
+                              return 'Email cannot be empty';
+                            }
+                            if (!EmailValidator.validate(email)) {
+                              return 'Enter a valid email';
+                            }
+                            return null;
+                          },
+                          controller: _emailInput,
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Email',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
 
-                        if (otpsent) {
-                          Navigator.push(
-                              context,
-                              SlideRightRoute(
-                                  page: Otp(
-                                Username: _usernameInput.text,
-                                Password: _passwordInput.text,
-                                Email: _emailInput.text,
-                              )));
-                        }
-                      },
-                      child: const Center(
-                        child: Text(
-                          'SEND OTP',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, color: Colors.white),
+                  const SizedBox(
+                    height: 6,
+                  ),
+                  // textinput(
+                  //   inputController: _passwordInput,
+                  //   text: 'Password',
+                  // ),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.deepPurple,
+                        ),
+                        color: Colors.deepPurple[50],
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          left: 20,
+                          bottom: 5,
+                        ),
+                        child: TextFormField(
+                          validator: (password) {
+                            if (password == null || password.isEmpty) {
+                              return 'password cannot be empty';
+                            }
+                            if (password.length < 6) {
+                              return 'password must be atleast 6 charecter';
+                            }
+                            return null;
+                          },
+                          controller: _passwordInput,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Password',
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Container(
-                    height: 2,
-                    decoration: const BoxDecoration(
-                      color: Colors.deepPurple,
+                  const SizedBox(
+                    height: 6,
+                  ),
+                  // textinput(
+                  //   inputController: _repasswordInput,
+                  //   text: 'Re-enter Password',
+                  // ),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.deepPurple,
+                        ),
+                        color: Colors.deepPurple[50],
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          left: 20,
+                          bottom: 5,
+                        ),
+                        child: TextFormField(
+                          obscureText: true,
+                          validator: (repassword) {
+                            if (repassword == null || repassword.isEmpty) {
+                              return 'password cannot be empty';
+                            }
+                            if (repassword != _passwordInput.text) {
+                              return 'Passwords do NOT match';
+                            }
+                            return null;
+                          },
+                          controller: _repasswordInput,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Re-enter Password',
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.deepPurple[100],
-                      borderRadius: BorderRadius.circular(12.0),
+                  const SizedBox(
+                    height: 6,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.deepPurple,
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      child: TextButton(
+                        style: ButtonStyle(
+                          overlayColor: MaterialStateProperty.all(
+                            Colors.white54,
+                          ),
+                        ),
+                        onPressed: () async {
+                          bool otpsent = true;
+                          final form = formKey.currentState!;
+                          if (form.validate()) {
+                            Navigator.push(
+                                context,
+                                SlideRightRoute(
+                                    page: Otp(
+                                  Email: _emailInput.text,
+                                  Password: _passwordInput.text,
+                                  Username: _usernameInput.text,
+                                )));
+                          }
+
+                          //await otpRequest(
+                          //  _usernameInput.text, _emailInput.text);
+
+                          // if (otpsent) {
+                          //   Navigator.push(
+                          //       context,
+                          //       SlideRightRoute(
+                          //           page: Otp(
+                          //         Username: _usernameInput.text,
+                          //         Password: _passwordInput.text,
+                          //         Email: _emailInput.text,
+                          //       )));
+                          // }
+                        },
+                        child: const Center(
+                          child: Text(
+                            'SEND OTP',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                        ),
+                      ),
                     ),
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 4.0),
-                              child: Image.asset(
-                                "assets/images/googlelogo.png",
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: Container(
+                      height: 2,
+                      decoration: const BoxDecoration(
+                        color: Colors.deepPurple,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 5,
+                    ),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.deepPurple[100],
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      child: TextButton(
+                        onPressed: () {},
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 4.0),
+                                child: Image.asset(
+                                  "assets/images/googlelogo.png",
+                                ),
                               ),
-                            ),
-                            const Text(
-                              'SIGN UP WITH GOOGLE',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black),
-                            ),
-                          ],
+                              const Text(
+                                'SIGN UP WITH GOOGLE',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ]),
+                ]),
+          ),
         ),
       ),
     );
@@ -217,7 +376,7 @@ class textinput extends StatelessWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.only(left: 20),
-          child: TextField(
+          child: TextFormField(
             controller: inputController,
             decoration:
                 InputDecoration(border: InputBorder.none, hintText: text),
